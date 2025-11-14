@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+alembic
+pydantic
+python-multipart
+passlib[bcrypt]
+python-jose[cryptography]
+transformers
+torch    # or 'accelerate' if using CPU optimizations
+python-dotenv
+boto3    # if you want S3 storage
