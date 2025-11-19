@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: grievance_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/grievance_db
+      UPLOAD_DIR: /data/uploads
+      SECRET_KEY: replace-me
+    volumes:
+      - ./backend/app:/app
+      - uploads:/data/uploads
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend:/app
+    environment:
+      API_BASE: "http://backend:8000"
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
+  uploads:
